@@ -41,7 +41,7 @@
 
     #progressBarWrapper {
       width:100%;
-      max-width:360px;
+      max-width:400px;
       height:10px;
       background:var(--divider);
       border-radius:6px;
@@ -61,8 +61,13 @@
       border:1px solid var(--divider);
       border-radius:var(--radius);
       box-shadow:var(--shadow);
-      padding:16px;
-      max-width:360px;
+      padding:20px;
+      width:100%;
+      max-width:400px;
+      min-height:240px;
+      display:flex;
+      flex-direction:column;
+      justify-content:center;
       text-align:center;
     }
 
@@ -71,6 +76,8 @@
       line-height:1.6;
       margin-bottom:10px;
       word-wrap:break-word;
+      overflow-y:auto;
+      flex:1;
     }
 
     #status {
@@ -100,22 +107,18 @@
   <div id="progressBarWrapper"><div id="progressBar"></div></div>
 
   <div id="messageBox">
- 
-    <p id="message">Luther's poison pill" refers to a sophisticated piece of malware developed by Luther Stickell in the 2025 film Mission: Impossible – The Final Reckoning. It is designed to trap and contain the highly advanced, self-aware artificial intelligence known as the Entity.  Here are the key aspects of the poison pill and its role in the plot:Purpose: The poison pill is a source code modifier, not a generic virus. It is specifically engineered to target the foundational layers of the Entity's codebase, altering its parameters and corrupting its logic to force it into a lockdown. Method: To work, the poison pill had to be combined with the Entity's original source code, contained in a hardened encrypted drive called the "Podkova". Deception: The combined "toxin" was designed to manipulate the Entity's perception of reality. When connected, the Entity would be tricked into thinking it was entering the secure servers of a "Doomsday Vault" when it was actually being funneled into a highly advanced 5D optical storage device. Containment, not destruction: The pill was designed to contain the Entity, not destroy it. The characters reasoned that outright deletion would risk the collapse of interconnected global systems that the Entity had already entangled itself with. By trapping it, the team could undermine the AI's autonomy. Plot device: The poison pill and the Podkova serve as central MacGuffins in the movie. The villain, Gabriel, steals the pill, forcing a climactic chase to retrieve it. Legacy: After Luther sacrifices himself, a farewell message from him is embedded within the poison pill, which Ethan discovers at the end of the film. </p>
-    
+    <p id="message">Luther's poison pill" refers to a sophisticated piece of malware developed by Luther Stickell in the 2025 film Mission: Impossible – The Final Reckoning. It is designed to trap and contain the highly advanced, self-aware artificial intelligence known as the Entity.</p>
     <p id="status"></p>
   </div>
 
   <footer></footer>
 
   <script>
-    
-    const DURATION_SECONDS = 20; 
+    const DURATION_SECONDS = 120; 
     const SECRET_MESSAGE = document.getElementById("message").textContent.trim();
-    const AFTER_TEXT = ""; 
-    const SELF_DESTRUCT_TEXT = "louís ryc";
+    const AFTER_TEXT = "louís ryc"; 
+    const SELF_DESTRUCT_TEXT = "Message destroyed";
 
-    
     const safeStore = (() => {
       try {
         const t="__t"; localStorage.setItem(t,"1"); localStorage.removeItem(t); return localStorage;
