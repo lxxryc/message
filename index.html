@@ -1,0 +1,146 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>Self-Destruct Message</title>
+  <style>
+    :root {
+      --bg:#f6f7fb;
+      --text:#1f2937;
+      --muted:#6b7280;
+      --card:#ffffff;
+      --accent:#2563eb;
+      --accent-2:#22c55e;
+      --danger:#ef4444;
+      --divider:#e5e7eb;
+      --shadow:0 8px 20px rgba(0,0,0,.08);
+      --radius:14px;
+    }
+
+    *{margin:0;padding:0;box-sizing:border-box}
+    body{
+      font-family:ui-sans-serif,system-ui,-apple-system,Segoe UI,Roboto;
+      background:var(--bg);
+      color:var(--text);
+      min-height:100vh;
+      display:flex;
+      flex-direction:column;
+      justify-content:center;
+      align-items:center;
+      padding:16px;
+    }
+
+    #countdownText {
+      font-weight:700;
+      font-size:1.1rem;
+      color:var(--accent);
+      text-align:center;
+      margin-bottom:10px;
+    }
+
+    #progressBarWrapper {
+      width:100%;
+      max-width:360px;
+      height:10px;
+      background:var(--divider);
+      border-radius:6px;
+      overflow:hidden;
+      margin-bottom:14px;
+    }
+
+    #progressBar {
+      height:100%;
+      background:linear-gradient(90deg,var(--accent),var(--accent-2));
+      width:100%;
+      transition:width 1s linear;
+    }
+
+    #messageBox {
+      background:var(--card);
+      border:1px solid var(--divider);
+      border-radius:var(--radius);
+      box-shadow:var(--shadow);
+      padding:16px;
+      max-width:360px;
+      text-align:center;
+    }
+
+    #message {
+      font-size:1rem;
+      line-height:1.6;
+      margin-bottom:10px;
+      word-wrap:break-word;
+    }
+
+    #status {
+      font-weight:700;
+      font-size:1.1rem;
+      margin-top:8px;
+    }
+
+    .after-text {
+      display:block;
+      margin-top:6px;
+      font-size:.9rem;
+      color:var(--muted);
+    }
+
+    footer {
+      margin-top:20px;
+      font-size:.8rem;
+      color:var(--muted);
+      text-align:center;
+    }
+  </style>
+</head>
+<body>
+
+  <div id="countdownText">This message will self-destruct in <span id="countdown"></span></div>
+  <div id="progressBarWrapper"><div id="progressBar"></div></div>
+
+  <div id="messageBox">
+    <p id="message">I Love You.</p>
+    <p id="status"></p>
+  </div>
+
+  <footer>© 2025 Louís Ryc</footer>
+
+  <script>
+    const DURATION_SECONDS = 80; 
+    let remaining = DURATION_SECONDS;
+    const countdownEl = document.getElementById("countdown");
+    const progressBar = document.getElementById("progressBar");
+    const messageEl = document.getElementById("message");
+    const statusEl = document.getElementById("status");
+
+    function formatTime(sec) {
+      if (sec < 60) return sec + "s";
+      const m = Math.floor(sec / 60);
+      const s = sec % 60;
+      return m + "m " + (s > 0 ? s + "s" : "");
+    }
+
+    function updateCountdown() {
+      countdownEl.textContent = formatTime(remaining);
+      const pct = (remaining / DURATION_SECONDS) * 100;
+      progressBar.style.width = pct + "%";
+    }
+
+    updateCountdown();
+    const timer = setInterval(() => {
+      remaining--;
+      updateCountdown();
+      if (remaining <= 0) {
+        clearInterval(timer);
+        messageEl.textContent = "";
+        statusEl.textContent = "Message destroyed";
+        const after = document.createElement("span");
+        after.className = "after-text";
+        after.textContent = "— Anonymous";
+        statusEl.appendChild(after);
+      }
+    }, 1000);
+  </script>
+</body>
+</html>
