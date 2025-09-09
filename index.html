@@ -100,15 +100,42 @@
   <div id="progressBarWrapper"><div id="progressBar"></div></div>
 
   <div id="messageBox">
-    <p id="message">I Love You.</p>
+    <!-- ✨ CHANGE YOUR SECRET MESSAGE HERE -->
+    <p id="message">This is a secret message. Read it before it disappears!</p>
+    <!-- ✨ END OF EDIT -->
     <p id="status"></p>
   </div>
 
-  <footer>© 2025 Louís Ryc</footer>
+  <footer>© Louís Ryc</footer>
 
   <script>
-    const DURATION_SECONDS = 10; 
-    let remaining = DURATION_SECONDS;
+    
+    const DURATION_SECONDS = 5; 
+    const SECRET_MESSAGE = "I Love You💋"; document.getElementById("message").textContent.trim();
+    const AFTER_TEXT = ""; 
+    const SELF_DESTRUCT_TEXT = "message destroyed";
+
+    
+    const safeStore = (() => {
+      try {
+        const t="__t"; localStorage.setItem(t,"1"); localStorage.removeItem(t); return localStorage;
+      } catch(e) {
+        return {getItem(){return null}, setItem(){}, removeItem(){}};
+      }
+    })();
+
+    
+    const hashString = (str)=>{
+      let h = 0x811c9dc5;
+      for (const ch of str) {
+        h ^= ch.codePointAt(0);
+        h += (h<<1)+(h<<4)+(h<<7)+(h<<8)+(h<<24);
+        h >>>= 0;
+      }
+      return ("00000000" + h.toString(16)).slice(-8);
+    };
+    const UNIQUE_KEY = "msg_" + hashString(SECRET_MESSAGE);
+
     const countdownEl = document.getElementById("countdown");
     const progressBar = document.getElementById("progressBar");
     const messageEl = document.getElementById("message");
@@ -121,28 +148,33 @@
       return m + "m " + (s > 0 ? s + "s" : "");
     }
 
-    function updateCountdown() {
-      countdownEl.textContent = formatTime(remaining);
-      const pct = (remaining / DURATION_SECONDS) * 100;
-      progressBar.style.width = pct + "%";
+    function showDestroyed() {
+      document.getElementById("countdownText").style.display = "none";
+      document.getElementById("progressBarWrapper").style.display = "none";
+      messageEl.textContent = "";
+      statusEl.textContent = SELF_DESTRUCT_TEXT;
+      const after = document.createElement("span");
+      after.className = "after-text";
+      after.textContent = AFTER_TEXT;
+      statusEl.appendChild(after);
     }
 
-    updateCountdown();
-    const timer = setInterval(() => {
-      remaining--;
-      updateCountdown();
-      if (remaining <= 0) {
-        clearInterval(timer);
-        messageEl.textContent = "";
-        statusEl.textContent = "Message destroyed";
-        const after = document.createElement("span");
-        after.className = "after-text";
-        after.textContent = "— Anonymous";
-        statusEl.appendChild(after);
-      }
-    }, 1000);
+    if (safeStore.getItem(UNIQUE_KEY) === "true") {
+      showDestroyed();
+    } else {
+      let remaining = DURATION_SECONDS;
+      countdownEl.textContent = formatTime(remaining);
+      const timer = setInterval(() => {
+        remaining--;
+        countdownEl.textContent = formatTime(remaining);
+        progressBar.style.width = (remaining / DURATION_SECONDS) * 100 + "%";
+        if (remaining <= 0) {
+          clearInterval(timer);
+          safeStore.setItem(UNIQUE_KEY,"true");
+          showDestroyed();
+        }
+      }, 1000);
+    }
   </script>
 </body>
-
 </html>
-
