@@ -10,8 +10,8 @@
       --text:#1f2937;
       --muted:#6b7280;
       --card:#ffffff;
-      --accent:#2563eb;
-      --accent-2:#22c55e;
+      --accent:#6366f1;
+      --accent-2:#8b5cf6;
       --danger:#ef4444;
       --divider:#e5e7eb;
       --shadow:0 8px 20px rgba(0,0,0,.08);
@@ -39,18 +39,9 @@
       color:var(--danger);
     }
 
-    .blink {
-      animation: blinkAnim 1s infinite;
-    }
-
-    @keyframes blinkAnim {
-      0%, 50%, 100% { opacity: 1; }
-      25%, 75% { opacity: 0; }
-    }
-
     #progressBarWrapper {
-      width:100%;
-      max-width:260px;
+      width:80%;
+      max-width:400px;
       height:10px;
       background:var(--divider);
       border-radius:6px;
@@ -71,8 +62,8 @@
       border-radius:var(--radius);
       box-shadow:var(--shadow);
       padding:16px;
-      width:65%;
-      max-width:260px;
+      width:100%;
+      max-width:400px;
       min-height:160px;
       display:flex;
       flex-direction:column;
@@ -112,21 +103,21 @@
 </head>
 <body>
 
-  <div id="countdownText" class="blink">This message will self-destruct in <span id="countdown"></span></div>
+  <div id="countdownText">This message will self-destruct</div>
   <div id="progressBarWrapper"><div id="progressBar"></div></div>
 
   <div id="messageBox">
-    <p id="message">Luther's poison pill refers to a sophisticated piece of malware developed by Luther Stickell in the 2025 film Mission: Impossible – The Final Reckoning. It is designed to trap and contain the highly advanced, self-aware artificial intelligence known as the Entity.</p>
+    <p id="message">CRUSH TIKA😁</p>
     <p id="status"></p>
   </div>
 
   <footer></footer>
 
   <script>
-    const DURATION_SECONDS = 120; 
+    const DURATION_SECONDS = 3; 
     const SECRET_MESSAGE = document.getElementById("message").textContent.trim();
     const AFTER_TEXT = "louís ryc"; 
-    const SELF_DESTRUCT_TEXT = "Message destroyed";
+    const SELF_DESTRUCT_TEXT = "";
 
     const safeStore = (() => {
       try {
@@ -147,18 +138,10 @@
     };
     const UNIQUE_KEY = "msg_" + hashString(SECRET_MESSAGE);
 
-    const countdownEl = document.getElementById("countdown");
     const progressBar = document.getElementById("progressBar");
     const messageEl = document.getElementById("message");
     const statusEl = document.getElementById("status");
     const countdownText = document.getElementById("countdownText");
-
-    function formatTime(sec) {
-      if (sec < 60) return sec + "s";
-      const m = Math.floor(sec / 60);
-      const s = sec % 60;
-      return m + "m " + (s > 0 ? s + "s" : "");
-    }
 
     function adjustFontSize() {
       const length = SECRET_MESSAGE.length;
@@ -188,15 +171,8 @@
       showDestroyed();
     } else {
       let remaining = DURATION_SECONDS;
-      countdownEl.textContent = formatTime(remaining);
       const timer = setInterval(() => {
         remaining--;
-        countdownEl.textContent = formatTime(remaining);
-
-        if (remaining <= 5) {
-          countdownText.classList.add("blink");
-        }
-
         progressBar.style.width = (remaining / DURATION_SECONDS) * 100 + "%";
         if (remaining <= 0) {
           clearInterval(timer);
