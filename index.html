@@ -107,15 +107,15 @@
       position:absolute;
       top:10px;
       right:10px;
-      background:var(--card);
-      border:1px solid var(--divider);
-      border-radius:8px;
-      padding:6px 12px;
+      background:none;
+      border:none;
+      font-size:1.5rem;
       cursor:pointer;
-      box-shadow:var(--shadow);
-      font-size:.8rem;
       color:var(--text);
+      transition:transform 0.2s;
     }
+    #toggleTheme:focus { outline:none; }
+    #toggleTheme:hover { transform:scale(1.1); }
     .fade-out {
       animation: fade 1s forwards;
     }
@@ -126,7 +126,7 @@
   </style>
 </head>
 <body>
-  <button id="toggleTheme">Toggle</button>
+  <button id="toggleTheme">🌙</button>
   <div id="countdownText">This message will self-destruct</div>
   <div id="progressBarWrapper"><div id="progressBar"></div></div>
   <div id="messageBox">
@@ -161,16 +161,302 @@
 
     const API_URL = "https://api.quotable.io/random";
     const AFTER_TEXT = "louís ryc";
-    const SELF_DESTRUCT_TEXT = "This message has already been destroyed on this device.";
+    const SELF_DESTRUCT_TEXT = "Message destroyed";
 
     const messageEl = document.getElementById("message");
     const statusEl = document.getElementById("status");
     const progressBar = document.getElementById("progressBar");
     const countdownText = document.getElementById("countdownText");
+    const toggleBtn = document.getElementById("toggleTheme");
+
+    // --- Theme toggle ---
+    toggleBtn.onclick = () => {
+      document.body.classList.toggle("dark");
+      toggleBtn.textContent = document.body.classList.contains("dark") ? "🌞" : "🌙";
+    };
+
+    // --- Helpers ---
+    function getTodayKey() {
+      const now = new Date();
+      return `${now.getFullYear()}-${now.getMonth()+1}-${now.getDate()}`;
+    }
+    function getNextReset() {
+      const now = new Date();
+      const reset = new Date();
+      reset.setHours(15,0,0,0);
+      if (now >= reset) reset.setDate(reset.getDate()+1);
+      return reset;
+    }
+
+    async function fetchQuote() {
+      try {
+        const res = await fetch(API_URL, { cache: "no-store" });
+        if (!res.ok) throw new Error();
+        const data = await res.json();
+        return data.content;
+      } catch {
+        let idx = parseInt(localStorage.getItem("fallbackIndex")||"0",10);
+        const quote = FALLBACK_QUOTES[idx];
+        idx = (idx+1) % FALLBACK_QUOTES.length;
+        localStorage.setItem("fallbackIndex", idx);
+        return quote;
+      }
+    }
+
+    function adjustFontSize(text) {
+      if (text.length > 400) return "0.85rem";
+      if (text.length > 200) return "0.9rem";
+      return "1rem";
+    }
+
+    function computeDuration(text) {
+      return Math.max(10, Math.ceil(text.length/12));
+    }
+
+    // --- Main ---
+    async function init() {
+      const todayKey = getTodayKey();
+      let data = JSON.parse(localStorage.getItem("quoteData")||"null");
+
+      if (!data || data.date !== todayKey) {
+        const newQuote = await fetchQuote();
+        data = { date: todayKey, text: newQuote, destroyed: false };
+        localStorage.setItem("quoteData", JSON.stringify(data));
+      }
+
+      if (data.destroyed) {
+        showDestroyed();
+      } else {
+        startCountdown(data);
+      }
+
+      const delay = getNextReset() - new Date();
+      setTimeout(() => { localStorage.removeItem("quoteData"); location.reload(); }, delay);
+    }
+
+    function startCountdown(data) {
+      messageEl.textContent = data.text;
+      messageEl.style.fontSize = adjustFontSize(data.text);
+      let remaining = computeDuration(data.text);
+      const duration = remaining;
+      const timer = setInterval(() => {
+        remaining--;
+        progressBar.style.width = (remaining/duration)*100+"%";
+        if (remaining <= 0) {
+          clearInterval(timer);
+          destroyMessage();
+        }
+      },1000);
+    }
+
+    function destroyMessage() {
+      let data = JSON.parse(localStorage.getItem("quoteData"));
+      data.destroyed = true;
+      localStorage.setItem("quoteData", JSON.stringify(data));
+
+      messageEl.classList.add("fade-out");
+      setTimeout(() => {
+        messageEl.textContent = "";
+        statusEl.textContent = SELF_DESTRUCT_TEXT;
+        const after = document.createElement("span");
+        after.className = "after-text";
+        after.textContent = AFTER_TEXT;
+        statusEl.appendChild(after);
+        countdownText.style.display="none";
+        document.getElementById("progressBarWrapper").style.display="none";
+      },1000);
+    }
+
+    function showDestroyed() {
+      messageEl.textContent = "";
+      statusEl.textContent = SELF_DESTRUCT_TEXT;
+      const after = document.createElement("span");
+      after.className = "after-text";
+      after.textContent = AFTER_TEXT;
+      statusEl.appendChild(after);
+      countdownText.style.display="none";
+      document.getElementById("progressBarWrapper").style.display="none";
+    }
+
+    init();
+  </script>
+</body>
+</html><!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=1.0, user-scalable=no">
+  <title>Self-Destruct Message</title>
+  <style>
+    :root {
+      --bg:#f9fafb;
+      --text:#111827;
+      --muted:#6b7280;
+      --card:#ffffff;
+      --accent:#4b5563;
+      --accent-2:#9ca3af;
+      --danger:#dc2626;
+      --divider:#e5e7eb;
+      --shadow:0 8px 20px rgba(0,0,0,.08);
+      --radius:14px;
+    }
+    body.dark {
+      --bg:#111827;
+      --text:#f9fafb;
+      --muted:#9ca3af;
+      --card:#1f2937;
+      --accent:#9ca3af;
+      --accent-2:#6b7280;
+      --danger:#ef4444;
+      --divider:#374151;
+      --shadow:0 8px 20px rgba(0,0,0,.4);
+    }
+    *{margin:0;padding:0;box-sizing:border-box}
+    body{
+      font-family:ui-sans-serif,system-ui,-apple-system,Segoe UI,Roboto;
+      background:var(--bg);
+      color:var(--text);
+      min-height:100vh;
+      display:flex;
+      flex-direction:column;
+      justify-content:center;
+      align-items:center;
+      padding:16px;
+      transition:background .3s,color .3s;
+    }
+    #countdownText {
+      font-weight:700;
+      font-size:1.1rem;
+      text-align:center;
+      margin-bottom:10px;
+      color:var(--danger);
+    }
+    #progressBarWrapper {
+      width:80%;
+      max-width:400px;
+      height:10px;
+      background:var(--divider);
+      border-radius:6px;
+      overflow:hidden;
+      margin-bottom:14px;
+    }
+    #progressBar {
+      height:100%;
+      background:linear-gradient(90deg,var(--accent),var(--accent-2));
+      width:100%;
+      transition:width 1s linear;
+    }
+    #messageBox {
+      background:var(--card);
+      border:1px solid var(--divider);
+      border-radius:var(--radius);
+      box-shadow:var(--shadow);
+      padding:16px;
+      width:100%;
+      max-width:400px;
+      min-height:160px;
+      display:flex;
+      flex-direction:column;
+      justify-content:center;
+      text-align:center;
+      transition:background .3s,color .3s;
+    }
+    #message {
+      font-size:1rem;
+      line-height:1.5;
+      margin-bottom:10px;
+      word-wrap:break-word;
+      overflow-y:auto;
+      flex:1;
+    }
+    #status {
+      font-weight:700;
+      font-size:1rem;
+      margin-top:8px;
+    }
+    .after-text {
+      display:block;
+      margin-top:6px;
+      font-size:.9rem;
+      color:var(--muted);
+    }
+    footer {
+      margin-top:20px;
+      font-size:.8rem;
+      color:var(--muted);
+      text-align:center;
+    }
+    #toggleTheme {
+      position:absolute;
+      top:10px;
+      right:10px;
+      background:none;
+      border:none;
+      font-size:1.5rem;
+      cursor:pointer;
+      color:var(--text);
+      transition:transform 0.2s;
+    }
+    #toggleTheme:focus { outline:none; }
+    #toggleTheme:hover { transform:scale(1.1); }
+    .fade-out {
+      animation: fade 1s forwards;
+    }
+    @keyframes fade {
+      from { opacity:1; }
+      to { opacity:0; }
+    }
+  </style>
+</head>
+<body>
+  <button id="toggleTheme">🌙</button>
+  <div id="countdownText">This message will self-destruct</div>
+  <div id="progressBarWrapper"><div id="progressBar"></div></div>
+  <div id="messageBox">
+    <p id="message"></p>
+    <p id="status"></p>
+  </div>
+  <footer></footer>
+
+  <script>
+    const FALLBACK_QUOTES = [
+      "Believe you can and you're halfway there.",
+      "Happiness depends upon ourselves.",
+      "Turn your wounds into wisdom.",
+      "The only way to do great work is to love what you do.",
+      "In the middle of every difficulty lies opportunity.",
+      "Dream big and dare to fail.",
+      "Success is not in what you have, but who you are.",
+      "What we think, we become.",
+      "Act as if what you do makes a difference. It does.",
+      "With the new day comes new strength and new thoughts.",
+      "Keep going. Everything you need will come to you at the perfect time.",
+      "Don’t wait. The time will never be just right.",
+      "Stay hungry, stay foolish.",
+      "Every moment is a fresh beginning.",
+      "All limitations are self-imposed.",
+      "Light tomorrow with today.",
+      "Whatever you are, be a good one.",
+      "Turn your face to the sun and the shadows fall behind you.",
+      "Wherever you go, go with all your heart.",
+      "Do what you can, with what you have, where you are."
+    ];
+
+    const API_URL = "https://api.quotable.io/random";
+    const AFTER_TEXT = "louís ryc";
+    const SELF_DESTRUCT_TEXT = "Message destroyed";
+
+    const messageEl = document.getElementById("message");
+    const statusEl = document.getElementById("status");
+    const progressBar = document.getElementById("progressBar");
+    const countdownText = document.getElementById("countdownText");
+    const toggleBtn = document.getElementById("toggleTheme");
 
     
-    const toggleBtn = document.getElementById("toggleTheme");
-    toggleBtn.onclick = () => document.body.classList.toggle("dark");
+    toggleBtn.onclick = () => {
+      document.body.classList.toggle("dark");
+      toggleBtn.textContent = document.body.classList.contains("dark") ? "🌞" : "🌙";
+    };
 
     
     function getTodayKey() {
@@ -192,7 +478,6 @@
         const data = await res.json();
         return data.content;
       } catch {
-        
         let idx = parseInt(localStorage.getItem("fallbackIndex")||"0",10);
         const quote = FALLBACK_QUOTES[idx];
         idx = (idx+1) % FALLBACK_QUOTES.length;
@@ -228,7 +513,6 @@
         startCountdown(data);
       }
 
-      
       const delay = getNextReset() - new Date();
       setTimeout(() => { localStorage.removeItem("quoteData"); location.reload(); }, delay);
     }
@@ -249,7 +533,6 @@
     }
 
     function destroyMessage() {
-      const todayKey = getTodayKey();
       let data = JSON.parse(localStorage.getItem("quoteData"));
       data.destroyed = true;
       localStorage.setItem("quoteData", JSON.stringify(data));
