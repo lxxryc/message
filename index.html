@@ -3,248 +3,265 @@
 <head>
   <meta charset="UTF-8">
   <meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=1.0, user-scalable=no">
-  <title>message</title>
+  <title>Message</title>
   <style>
     :root {
-      --bg:#f3f4f6;
-      --text:#1a1a1a;
-      --muted:#6b7280;
-      --card:#ffffff;
-      --accent:#2d2d2d;
-      --accent-2:#555555;
-      --danger:#d32f2f;
-      --divider:#e5e7eb;
-      --shadow:0 4px 14px rgba(0,0,0,0.08);
-      --radius:16px;
+      --bg: #f9f9f9;
+      --text: #111111;
+      --muted: #666666;
+      --card: #ffffff;
+      --accent: #000000;
+      --accent-2: #444444;
+      --danger: #cc0000;
+      --divider: #dddddd;
+      --shadow: 0 6px 18px rgba(0,0,0,0.1);
+      --radius: 14px;
     }
-
     [data-theme="dark"] {
-      --bg:#1a1a1a;
-      --text:#f5f5f5;
-      --muted:#9ca3af;
-      --card:#2a2a2a;
-      --accent:#f5f5f5;
-      --accent-2:#9ca3af;
-      --danger:#ef4444;
-      --divider:#3f3f3f;
-      --shadow:0 4px 14px rgba(0,0,0,0.6);
+      --bg: #111111;
+      --text: #f9f9f9;
+      --muted: #aaaaaa;
+      --card: #1c1c1c;
+      --accent: #ffffff;
+      --accent-2: #888888;
+      --danger: #ff5555;
+      --divider: #333333;
+      --shadow: 0 6px 18px rgba(0,0,0,0.5);
     }
-
     *{margin:0;padding:0;box-sizing:border-box}
     body{
-      font-family:ui-sans-serif,system-ui,-apple-system,Segoe UI,Roboto;
-      background:var(--bg);
-      color:var(--text);
-      min-height:100vh;
+      font-family: ui-sans-serif, system-ui, -apple-system, Segoe UI, Roboto;
+      background: var(--bg);
+      color: var(--text);
+      min-height: 100vh;
       display:flex;
       flex-direction:column;
       justify-content:center;
       align-items:center;
-      padding:20px;
-      transition:background 0.3s,color 0.3s;
+      padding:16px;
+      transition: background 0.3s, color 0.3s;
     }
-
-    #themeToggle {
-      position:absolute;
-      top:16px;
-      right:16px;
-      background:var(--card);
-      border:1px solid var(--divider);
-      border-radius:50%;
-      width:40px;
-      height:40px;
-      display:flex;
-      justify-content:center;
-      align-items:center;
-      cursor:pointer;
-      box-shadow:var(--shadow);
-      transition:all 0.3s ease;
-    }
-    #themeToggle:hover {
-      transform:scale(1.05);
-    }
-
     #countdownText {
-      font-weight:600;
-      font-size:1.15rem;
+      font-weight:700;
+      font-size:1.1rem;
       text-align:center;
-      margin-bottom:14px;
+      margin-bottom:10px;
       color:var(--danger);
-      letter-spacing:0.3px;
     }
-
     #progressBarWrapper {
       width:80%;
-      max-width:420px;
+      max-width:400px;
       height:10px;
       background:var(--divider);
-      border-radius:999px;
+      border-radius:6px;
       overflow:hidden;
-      margin-bottom:18px;
+      margin-bottom:14px;
     }
-
     #progressBar {
       height:100%;
       background:linear-gradient(90deg,var(--accent),var(--accent-2));
       width:100%;
-      transition:width 0.5s ease-in-out;
+      transition:width 1s linear;
     }
-
     #messageBox {
       background:var(--card);
       border:1px solid var(--divider);
       border-radius:var(--radius);
       box-shadow:var(--shadow);
-      padding:20px;
+      padding:16px;
       width:100%;
-      max-width:420px;
+      max-width:400px;
       min-height:160px;
       display:flex;
       flex-direction:column;
       justify-content:center;
       text-align:center;
-      transition:all 0.3s ease;
+      transition: background 0.3s, border 0.3s, box-shadow 0.3s;
     }
-    #messageBox:hover {
-      transform:translateY(-3px);
-      box-shadow:0 6px 20px rgba(0,0,0,0.15);
-    }
-
     #message {
       font-size:1rem;
-      line-height:1.6;
-      margin-bottom:12px;
+      line-height:1.5;
+      margin-bottom:10px;
       word-wrap:break-word;
       overflow-y:auto;
       flex:1;
-      color:var(--text);
-      transition:opacity 0.6s ease, transform 0.6s ease;
     }
-    .fade-out {
-      opacity:0;
-      transform:scale(0.95);
-    }
-
     #status {
-      font-weight:600;
+      font-weight:700;
       font-size:1rem;
-      margin-top:10px;
-      color:var(--text);
+      margin-top:8px;
     }
-
     .after-text {
       display:block;
       margin-top:6px;
       font-size:.9rem;
       color:var(--muted);
     }
-
     footer {
       margin-top:20px;
       font-size:.8rem;
       color:var(--muted);
       text-align:center;
     }
+    .fade-out {
+      animation: fadeOut 1s forwards;
+    }
+    @keyframes fadeOut {
+      from {opacity:1;}
+      to {opacity:0;}
+    }
+    .theme-toggle {
+      position: fixed;
+      top: 10px;
+      right: 10px;
+      padding: 6px 12px;
+      font-size: 0.9rem;
+      border-radius: 6px;
+      border: none;
+      background: var(--accent);
+      color: var(--card);
+      cursor: pointer;
+    }
   </style>
 </head>
-<body data-theme="light">
-
-  <button id="themeToggle">🌙</button>
+<body>
+  <button class="theme-toggle" id="themeToggle">🌙</button>
 
   <div id="countdownText">This message will self-destruct</div>
   <div id="progressBarWrapper"><div id="progressBar"></div></div>
 
   <div id="messageBox">
-    <p id="message">whatever you do in life, surround yourself with smart people who’ll argue with you</p>
+    <p id="message">Loading...</p>
     <p id="status"></p>
   </div>
 
-  <footer></footer>
+  <footer>Daily reset at 3PM</footer>
 
   <script>
-    const DURATION_SECONDS = 10; 
-    const SECRET_MESSAGE = document.getElementById("message").textContent.trim();
-    const AFTER_TEXT = "louís ryc"; 
-    const SELF_DESTRUCT_TEXT = "";
-
-    const safeStore = (() => {
-      try {
-        const t="__t"; localStorage.setItem(t,"1"); localStorage.removeItem(t); return localStorage;
-      } catch(e) {
-        return {getItem(){return null}, setItem(){}, removeItem(){}};
-      }
-    })();
-
-    const hashString = (str)=>{
-      let h = 0x811c9dc5;
-      for (const ch of str) {
-        h ^= ch.codePointAt(0);
-        h += (h<<1)+(h<<4)+(h<<7)+(h<<8)+(h<<24);
-        h >>>= 0;
-      }
-      return ("00000000" + h.toString(16)).slice(-8);
-    };
-    const UNIQUE_KEY = "msg_" + hashString(SECRET_MESSAGE);
+    const FALLBACK_QUOTES = [
+      "Believe in yourself.",
+      "Stay hungry, stay foolish.",
+      "Great things never come from comfort zones.",
+      "Dream it. Wish it. Do it.",
+      "Push yourself, because no one else will do it for you.",
+      "Success doesn’t just find you. You have to go out and get it.",
+      "Don’t stop when you’re tired. Stop when you’re done.",
+      "Do something today that your future self will thank you for.",
+      "Little things make big days.",
+      "It’s going to be hard, but hard does not mean impossible.",
+      "Don’t wait for opportunity. Create it.",
+      "Sometimes we’re tested not to show our weaknesses, but to discover our strengths.",
+      "The harder you work for something, the greater you’ll feel when you achieve it.",
+      "Dream bigger. Do bigger.",
+      "Don’t watch the clock; do what it does. Keep going.",
+      "Great things take time.",
+      "Action is the foundational key to all success.",
+      "If you can dream it, you can do it.",
+      "Your limitation—it’s only your imagination.",
+      "The way to get started is to quit talking and begin doing."
+    ];
 
     const progressBar = document.getElementById("progressBar");
     const messageEl = document.getElementById("message");
     const statusEl = document.getElementById("status");
     const countdownText = document.getElementById("countdownText");
 
-    function adjustFontSize() {
-      const length = SECRET_MESSAGE.length;
-      if (length > 400) {
-        messageEl.style.fontSize = "0.85rem";
-      } else if (length > 200) {
-        messageEl.style.fontSize = "0.9rem";
-      } else {
-        messageEl.style.fontSize = "1rem";
+    async function fetchQuote() {
+      try {
+        const res = await fetch("https://api.quotable.io/random");
+        if (!res.ok) throw new Error();
+        const data = await res.json();
+        return `${data.content} — ${data.author}`;
+      } catch {
+        return FALLBACK_QUOTES[Math.floor(Math.random() * FALLBACK_QUOTES.length)];
       }
     }
 
-    function showDestroyed() {
-      countdownText.style.display = "none";
-      document.getElementById("progressBarWrapper").style.display = "none";
-      messageEl.classList.add("fade-out");
-      setTimeout(() => {
-        messageEl.textContent = "";
-        statusEl.textContent = SELF_DESTRUCT_TEXT;
-        const after = document.createElement("span");
-        after.className = "after-text";
-        after.textContent = AFTER_TEXT;
-        statusEl.appendChild(after);
-      }, 600);
+    function getNextResetTime() {
+      const now = new Date();
+      const reset = new Date();
+      reset.setHours(15, 0, 0, 0); // 3PM today
+      if (now > reset) {
+        reset.setDate(reset.getDate() + 1);
+      }
+      return reset;
     }
 
-    adjustFontSize();
+    async function loadMessage() {
+      const stored = JSON.parse(localStorage.getItem("dailyMessage") || "{}");
+      const now = new Date();
+      const resetTime = getNextResetTime();
 
-    if (safeStore.getItem(UNIQUE_KEY) === "true") {
-      showDestroyed();
-    } else {
-      let remaining = DURATION_SECONDS;
+      if (!stored.message || !stored.resetTime || now >= new Date(stored.resetTime)) {
+        const quote = await fetchQuote();
+        localStorage.setItem("dailyMessage", JSON.stringify({ 
+          message: quote, 
+          resetTime: resetTime 
+        }));
+        return quote;
+      }
+      return stored.message;
+    }
+
+    function startSelfDestruct(msg) {
+      let duration = Math.max(10, Math.ceil(msg.length / 12));
+      let remaining = duration;
+      progressBar.style.width = "100%";
       const timer = setInterval(() => {
         remaining--;
-        progressBar.style.width = (remaining / DURATION_SECONDS) * 100 + "%";
+        progressBar.style.width = (remaining / duration) * 100 + "%";
         if (remaining <= 0) {
           clearInterval(timer);
-          safeStore.setItem(UNIQUE_KEY,"true");
-          showDestroyed();
+          destroyMessage();
         }
       }, 1000);
     }
 
-    // Theme toggle
+    function destroyMessage() {
+      messageEl.classList.add("fade-out");
+      setTimeout(() => {
+        messageEl.textContent = "";
+        statusEl.textContent = "";
+        const after = document.createElement("span");
+        after.className = "after-text";
+        after.textContent = "Message destroyed";
+        statusEl.appendChild(after);
+      }, 1000);
+    }
+
+    
     const themeToggle = document.getElementById("themeToggle");
-    const body = document.body;
     themeToggle.addEventListener("click", () => {
-      if (body.getAttribute("data-theme") === "light") {
-        body.setAttribute("data-theme", "dark");
-        themeToggle.textContent = "🌞";
-      } else {
-        body.setAttribute("data-theme", "light");
+      const current = document.body.getAttribute("data-theme");
+      if (current === "dark") {
+        document.body.removeAttribute("data-theme");
         themeToggle.textContent = "🌙";
+      } else {
+        document.body.setAttribute("data-theme", "dark");
+        themeToggle.textContent = "☀️";
       }
     });
+
+    
+    (async () => {
+      const msg = await loadMessage();
+      messageEl.textContent = msg;
+      startSelfDestruct(msg);
+
+     
+      setInterval(async () => {
+        const stored = JSON.parse(localStorage.getItem("dailyMessage") || "{}");
+        const now = new Date();
+        if (stored.resetTime && now >= new Date(stored.resetTime)) {
+          localStorage.removeItem("dailyMessage");
+          const newMsg = await loadMessage();
+          messageEl.textContent = newMsg;
+          statusEl.textContent = "";
+          messageEl.classList.remove("fade-out");
+          startSelfDestruct(newMsg);
+        }
+      }, 60000);
+    })();
   </script>
 </body>
 </html>
