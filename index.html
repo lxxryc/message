@@ -9,7 +9,7 @@
       --bg:#f9f9f9;
       --text:#111111;
       --muted:#666666;
-      --card:#ffffff;
+      --card:#ffffffcc;
       --accent:#000000;
       --accent-2:#444444;
       --danger:#cc0000;
@@ -21,7 +21,8 @@
     *{margin:0;padding:0;box-sizing:border-box}
     body{
       font-family:ui-sans-serif,system-ui,-apple-system,Segoe UI,Roboto;
-      background:var(--bg);
+      background:url("https://i.ibb.co/DPQG7bvq/background.jpg") no-repeat center center fixed;
+      background-size:cover;
       color:var(--text);
       min-height:100vh;
       display:flex;
@@ -37,6 +38,7 @@
       text-align:center;
       margin-bottom:10px;
       color:var(--danger);
+      text-shadow:0 1px 2px rgba(255,255,255,0.8);
     }
 
     #progressBarWrapper {
@@ -69,6 +71,7 @@
       flex-direction:column;
       justify-content:center;
       text-align:center;
+      backdrop-filter:blur(6px);
     }
 
     #message {
