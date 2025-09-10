@@ -3,43 +3,43 @@
 <head>
   <meta charset="UTF-8">
   <meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=1.0, user-scalable=no">
-  <title>Message</title>
+  <title>Self-Destruct Message</title>
   <style>
     :root {
-      --bg: #f9f9f9;
-      --text: #111111;
-      --muted: #666666;
-      --card: #ffffff;
-      --accent: #000000;
-      --accent-2: #444444;
-      --danger: #cc0000;
-      --divider: #dddddd;
-      --shadow: 0 6px 18px rgba(0,0,0,0.1);
-      --radius: 14px;
+      --bg:#f9fafb;
+      --text:#111827;
+      --muted:#6b7280;
+      --card:#ffffff;
+      --accent:#4b5563;
+      --accent-2:#9ca3af;
+      --danger:#dc2626;
+      --divider:#e5e7eb;
+      --shadow:0 8px 20px rgba(0,0,0,.08);
+      --radius:14px;
     }
-    [data-theme="dark"] {
-      --bg: #111111;
-      --text: #f9f9f9;
-      --muted: #aaaaaa;
-      --card: #1c1c1c;
-      --accent: #ffffff;
-      --accent-2: #888888;
-      --danger: #ff5555;
-      --divider: #333333;
-      --shadow: 0 6px 18px rgba(0,0,0,0.5);
+    body.dark {
+      --bg:#111827;
+      --text:#f9fafb;
+      --muted:#9ca3af;
+      --card:#1f2937;
+      --accent:#9ca3af;
+      --accent-2:#6b7280;
+      --danger:#ef4444;
+      --divider:#374151;
+      --shadow:0 8px 20px rgba(0,0,0,.4);
     }
     *{margin:0;padding:0;box-sizing:border-box}
     body{
-      font-family: ui-sans-serif, system-ui, -apple-system, Segoe UI, Roboto;
-      background: var(--bg);
-      color: var(--text);
-      min-height: 100vh;
+      font-family:ui-sans-serif,system-ui,-apple-system,Segoe UI,Roboto;
+      background:var(--bg);
+      color:var(--text);
+      min-height:100vh;
       display:flex;
       flex-direction:column;
       justify-content:center;
       align-items:center;
       padding:16px;
-      transition: background 0.3s, color 0.3s;
+      transition:background .3s,color .3s;
     }
     #countdownText {
       font-weight:700;
@@ -76,7 +76,7 @@
       flex-direction:column;
       justify-content:center;
       text-align:center;
-      transition: background 0.3s, border 0.3s, box-shadow 0.3s;
+      transition:background .3s,color .3s;
     }
     #message {
       font-size:1rem;
@@ -103,165 +103,182 @@
       color:var(--muted);
       text-align:center;
     }
+    #toggleTheme {
+      position:absolute;
+      top:10px;
+      right:10px;
+      background:var(--card);
+      border:1px solid var(--divider);
+      border-radius:8px;
+      padding:6px 12px;
+      cursor:pointer;
+      box-shadow:var(--shadow);
+      font-size:.8rem;
+      color:var(--text);
+    }
     .fade-out {
-      animation: fadeOut 1s forwards;
+      animation: fade 1s forwards;
     }
-    @keyframes fadeOut {
-      from {opacity:1;}
-      to {opacity:0;}
-    }
-    .theme-toggle {
-      position: fixed;
-      top: 10px;
-      right: 10px;
-      padding: 6px 12px;
-      font-size: 0.9rem;
-      border-radius: 6px;
-      border: none;
-      background: var(--accent);
-      color: var(--card);
-      cursor: pointer;
+    @keyframes fade {
+      from { opacity:1; }
+      to { opacity:0; }
     }
   </style>
 </head>
 <body>
-  <button class="theme-toggle" id="themeToggle">🌙</button>
-
+  <button id="toggleTheme">Toggle</button>
   <div id="countdownText">This message will self-destruct</div>
   <div id="progressBarWrapper"><div id="progressBar"></div></div>
-
   <div id="messageBox">
-    <p id="message">Loading...</p>
+    <p id="message"></p>
     <p id="status"></p>
   </div>
-
-  <footer>Daily reset at 3PM</footer>
+  <footer></footer>
 
   <script>
     const FALLBACK_QUOTES = [
-      "Believe in yourself.",
+      "Believe you can and you're halfway there.",
+      "Happiness depends upon ourselves.",
+      "Turn your wounds into wisdom.",
+      "The only way to do great work is to love what you do.",
+      "In the middle of every difficulty lies opportunity.",
+      "Dream big and dare to fail.",
+      "Success is not in what you have, but who you are.",
+      "What we think, we become.",
+      "Act as if what you do makes a difference. It does.",
+      "With the new day comes new strength and new thoughts.",
+      "Keep going. Everything you need will come to you at the perfect time.",
+      "Don’t wait. The time will never be just right.",
       "Stay hungry, stay foolish.",
-      "Great things never come from comfort zones.",
-      "Dream it. Wish it. Do it.",
-      "Push yourself, because no one else will do it for you.",
-      "Success doesn’t just find you. You have to go out and get it.",
-      "Don’t stop when you’re tired. Stop when you’re done.",
-      "Do something today that your future self will thank you for.",
-      "Little things make big days.",
-      "It’s going to be hard, but hard does not mean impossible.",
-      "Don’t wait for opportunity. Create it.",
-      "Sometimes we’re tested not to show our weaknesses, but to discover our strengths.",
-      "The harder you work for something, the greater you’ll feel when you achieve it.",
-      "Dream bigger. Do bigger.",
-      "Don’t watch the clock; do what it does. Keep going.",
-      "Great things take time.",
-      "Action is the foundational key to all success.",
-      "If you can dream it, you can do it.",
-      "Your limitation—it’s only your imagination.",
-      "The way to get started is to quit talking and begin doing."
+      "Every moment is a fresh beginning.",
+      "All limitations are self-imposed.",
+      "Light tomorrow with today.",
+      "Whatever you are, be a good one.",
+      "Turn your face to the sun and the shadows fall behind you.",
+      "Wherever you go, go with all your heart.",
+      "Do what you can, with what you have, where you are."
     ];
 
-    const progressBar = document.getElementById("progressBar");
+    const API_URL = "https://api.quotable.io/random";
+    const AFTER_TEXT = "louís ryc";
+    const SELF_DESTRUCT_TEXT = "This message has already been destroyed on this device.";
+
     const messageEl = document.getElementById("message");
     const statusEl = document.getElementById("status");
+    const progressBar = document.getElementById("progressBar");
     const countdownText = document.getElementById("countdownText");
 
-    async function fetchQuote() {
-      try {
-        const res = await fetch("https://api.quotable.io/random");
-        if (!res.ok) throw new Error();
-        const data = await res.json();
-        return `${data.content} — ${data.author}`;
-      } catch {
-        return FALLBACK_QUOTES[Math.floor(Math.random() * FALLBACK_QUOTES.length)];
-      }
-    }
+    
+    const toggleBtn = document.getElementById("toggleTheme");
+    toggleBtn.onclick = () => document.body.classList.toggle("dark");
 
-    function getNextResetTime() {
+    
+    function getTodayKey() {
+      const now = new Date();
+      return `${now.getFullYear()}-${now.getMonth()+1}-${now.getDate()}`;
+    }
+    function getNextReset() {
       const now = new Date();
       const reset = new Date();
-      reset.setHours(15, 0, 0, 0); // 3PM today
-      if (now > reset) {
-        reset.setDate(reset.getDate() + 1);
-      }
+      reset.setHours(15,0,0,0);
+      if (now >= reset) reset.setDate(reset.getDate()+1);
       return reset;
     }
 
-    async function loadMessage() {
-      const stored = JSON.parse(localStorage.getItem("dailyMessage") || "{}");
-      const now = new Date();
-      const resetTime = getNextResetTime();
-
-      if (!stored.message || !stored.resetTime || now >= new Date(stored.resetTime)) {
-        const quote = await fetchQuote();
-        localStorage.setItem("dailyMessage", JSON.stringify({ 
-          message: quote, 
-          resetTime: resetTime 
-        }));
+    async function fetchQuote() {
+      try {
+        const res = await fetch(API_URL, { cache: "no-store" });
+        if (!res.ok) throw new Error();
+        const data = await res.json();
+        return data.content;
+      } catch {
+        
+        let idx = parseInt(localStorage.getItem("fallbackIndex")||"0",10);
+        const quote = FALLBACK_QUOTES[idx];
+        idx = (idx+1) % FALLBACK_QUOTES.length;
+        localStorage.setItem("fallbackIndex", idx);
         return quote;
       }
-      return stored.message;
     }
 
-    function startSelfDestruct(msg) {
-      let duration = Math.max(10, Math.ceil(msg.length / 12));
-      let remaining = duration;
-      progressBar.style.width = "100%";
+    function adjustFontSize(text) {
+      if (text.length > 400) return "0.85rem";
+      if (text.length > 200) return "0.9rem";
+      return "1rem";
+    }
+
+    function computeDuration(text) {
+      return Math.max(10, Math.ceil(text.length/12));
+    }
+
+    
+    async function init() {
+      const todayKey = getTodayKey();
+      let data = JSON.parse(localStorage.getItem("quoteData")||"null");
+
+      if (!data || data.date !== todayKey) {
+        const newQuote = await fetchQuote();
+        data = { date: todayKey, text: newQuote, destroyed: false };
+        localStorage.setItem("quoteData", JSON.stringify(data));
+      }
+
+      if (data.destroyed) {
+        showDestroyed();
+      } else {
+        startCountdown(data);
+      }
+
+      
+      const delay = getNextReset() - new Date();
+      setTimeout(() => { localStorage.removeItem("quoteData"); location.reload(); }, delay);
+    }
+
+    function startCountdown(data) {
+      messageEl.textContent = data.text;
+      messageEl.style.fontSize = adjustFontSize(data.text);
+      let remaining = computeDuration(data.text);
+      const duration = remaining;
       const timer = setInterval(() => {
         remaining--;
-        progressBar.style.width = (remaining / duration) * 100 + "%";
+        progressBar.style.width = (remaining/duration)*100+"%";
         if (remaining <= 0) {
           clearInterval(timer);
           destroyMessage();
         }
-      }, 1000);
+      },1000);
     }
 
     function destroyMessage() {
+      const todayKey = getTodayKey();
+      let data = JSON.parse(localStorage.getItem("quoteData"));
+      data.destroyed = true;
+      localStorage.setItem("quoteData", JSON.stringify(data));
+
       messageEl.classList.add("fade-out");
       setTimeout(() => {
         messageEl.textContent = "";
-        statusEl.textContent = "";
+        statusEl.textContent = SELF_DESTRUCT_TEXT;
         const after = document.createElement("span");
         after.className = "after-text";
-        after.textContent = "Message destroyed";
+        after.textContent = AFTER_TEXT;
         statusEl.appendChild(after);
-      }, 1000);
+        countdownText.style.display="none";
+        document.getElementById("progressBarWrapper").style.display="none";
+      },1000);
     }
 
-    
-    const themeToggle = document.getElementById("themeToggle");
-    themeToggle.addEventListener("click", () => {
-      const current = document.body.getAttribute("data-theme");
-      if (current === "dark") {
-        document.body.removeAttribute("data-theme");
-        themeToggle.textContent = "🌙";
-      } else {
-        document.body.setAttribute("data-theme", "dark");
-        themeToggle.textContent = "☀️";
-      }
-    });
+    function showDestroyed() {
+      messageEl.textContent = "";
+      statusEl.textContent = SELF_DESTRUCT_TEXT;
+      const after = document.createElement("span");
+      after.className = "after-text";
+      after.textContent = AFTER_TEXT;
+      statusEl.appendChild(after);
+      countdownText.style.display="none";
+      document.getElementById("progressBarWrapper").style.display="none";
+    }
 
-    
-    (async () => {
-      const msg = await loadMessage();
-      messageEl.textContent = msg;
-      startSelfDestruct(msg);
-
-     
-      setInterval(async () => {
-        const stored = JSON.parse(localStorage.getItem("dailyMessage") || "{}");
-        const now = new Date();
-        if (stored.resetTime && now >= new Date(stored.resetTime)) {
-          localStorage.removeItem("dailyMessage");
-          const newMsg = await loadMessage();
-          messageEl.textContent = newMsg;
-          statusEl.textContent = "";
-          messageEl.classList.remove("fade-out");
-          startSelfDestruct(newMsg);
-        }
-      }, 60000);
-    })();
+    init();
   </script>
 </body>
 </html>
