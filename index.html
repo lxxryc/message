@@ -18,6 +18,18 @@
       --radius:16px;
     }
 
+    [data-theme="dark"] {
+      --bg:#1a1a1a;
+      --text:#f5f5f5;
+      --muted:#9ca3af;
+      --card:#2a2a2a;
+      --accent:#f5f5f5;
+      --accent-2:#9ca3af;
+      --danger:#ef4444;
+      --divider:#3f3f3f;
+      --shadow:0 4px 14px rgba(0,0,0,0.6);
+    }
+
     *{margin:0;padding:0;box-sizing:border-box}
     body{
       font-family:ui-sans-serif,system-ui,-apple-system,Segoe UI,Roboto;
@@ -29,6 +41,27 @@
       justify-content:center;
       align-items:center;
       padding:20px;
+      transition:background 0.3s,color 0.3s;
+    }
+
+    #themeToggle {
+      position:absolute;
+      top:16px;
+      right:16px;
+      background:var(--card);
+      border:1px solid var(--divider);
+      border-radius:50%;
+      width:40px;
+      height:40px;
+      display:flex;
+      justify-content:center;
+      align-items:center;
+      cursor:pointer;
+      box-shadow:var(--shadow);
+      transition:all 0.3s ease;
+    }
+    #themeToggle:hover {
+      transform:scale(1.05);
     }
 
     #countdownText {
@@ -45,7 +78,7 @@
       max-width:420px;
       height:10px;
       background:var(--divider);
-      border-radius:8px;
+      border-radius:999px;
       overflow:hidden;
       margin-bottom:18px;
     }
@@ -54,7 +87,7 @@
       height:100%;
       background:linear-gradient(90deg,var(--accent),var(--accent-2));
       width:100%;
-      transition:width 1s linear;
+      transition:width 0.5s ease-in-out;
     }
 
     #messageBox {
@@ -70,6 +103,11 @@
       flex-direction:column;
       justify-content:center;
       text-align:center;
+      transition:all 0.3s ease;
+    }
+    #messageBox:hover {
+      transform:translateY(-3px);
+      box-shadow:0 6px 20px rgba(0,0,0,0.15);
     }
 
     #message {
@@ -80,6 +118,11 @@
       overflow-y:auto;
       flex:1;
       color:var(--text);
+      transition:opacity 0.6s ease, transform 0.6s ease;
+    }
+    .fade-out {
+      opacity:0;
+      transform:scale(0.95);
     }
 
     #status {
@@ -104,7 +147,9 @@
     }
   </style>
 </head>
-<body>
+<body data-theme="light">
+
+  <button id="themeToggle">🌙</button>
 
   <div id="countdownText">This message will self-destruct</div>
   <div id="progressBarWrapper"><div id="progressBar"></div></div>
@@ -160,12 +205,15 @@
     function showDestroyed() {
       countdownText.style.display = "none";
       document.getElementById("progressBarWrapper").style.display = "none";
-      messageEl.textContent = "";
-      statusEl.textContent = SELF_DESTRUCT_TEXT;
-      const after = document.createElement("span");
-      after.className = "after-text";
-      after.textContent = AFTER_TEXT;
-      statusEl.appendChild(after);
+      messageEl.classList.add("fade-out");
+      setTimeout(() => {
+        messageEl.textContent = "";
+        statusEl.textContent = SELF_DESTRUCT_TEXT;
+        const after = document.createElement("span");
+        after.className = "after-text";
+        after.textContent = AFTER_TEXT;
+        statusEl.appendChild(after);
+      }, 600);
     }
 
     adjustFontSize();
@@ -184,6 +232,19 @@
         }
       }, 1000);
     }
+
+    // Theme toggle
+    const themeToggle = document.getElementById("themeToggle");
+    const body = document.body;
+    themeToggle.addEventListener("click", () => {
+      if (body.getAttribute("data-theme") === "light") {
+        body.setAttribute("data-theme", "dark");
+        themeToggle.textContent = "🌞";
+      } else {
+        body.setAttribute("data-theme", "light");
+        themeToggle.textContent = "🌙";
+      }
+    });
   </script>
 </body>
 </html>
