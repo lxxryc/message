@@ -133,7 +133,7 @@
     <p id="message"></p>
     <p id="status"></p>
   </div>
-  <footer>will reset @3pm</footer>
+  <footer>LX</footer>
 
   <script>
     const FALLBACK_QUOTES = [
@@ -160,7 +160,7 @@
     ];
 
     const API_URL = "https://api.quotable.io/random";
-    const AFTER_TEXT = "louís ryc";
+    const AFTER_TEXT = "resets @3pm";
     const SELF_DESTRUCT_TEXT = "Message destroyed";
 
     const messageEl = document.getElementById("message");
@@ -169,7 +169,7 @@
     const countdownText = document.getElementById("countdownText");
     const toggleBtn = document.getElementById("toggleTheme");
 
-    
+    // Theme toggle
     toggleBtn.onclick = () => {
       document.body.classList.toggle("dark");
       toggleBtn.textContent = document.body.classList.contains("dark") ? "🌞" : "🌙";
@@ -218,7 +218,7 @@
       const resetTime = getResetTime();
       const isPastReset = now >= resetTime;
 
-      
+      // If no data, or wrong date, or past reset time → new message
       if (!data || data.date !== todayKey || isPastReset) {
         const newQuote = await fetchQuote();
         data = { date: todayKey, text: newQuote, destroyed: false };
