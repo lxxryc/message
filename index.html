@@ -133,7 +133,7 @@
     <p id="message"></p>
     <p id="status"></p>
   </div>
-  <footer>refresh @3pm</footer>
+  <footer>will reset @3pm</footer>
 
   <script>
     const FALLBACK_QUOTES = [
@@ -175,16 +175,13 @@
       toggleBtn.textContent = document.body.classList.contains("dark") ? "🌞" : "🌙";
     };
 
-    
     function getTodayKey() {
       const now = new Date();
       return `${now.getFullYear()}-${now.getMonth()+1}-${now.getDate()}`;
     }
-    function getNextReset() {
-      const now = new Date();
+    function getResetTime() {
       const reset = new Date();
-      reset.setHours(15,0,0,0);
-      if (now >= reset) reset.setDate(reset.getDate()+1);
+      reset.setHours(15,0,0,0); // 3:00 PM
       return reset;
     }
 
@@ -213,12 +210,16 @@
       return Math.max(10, Math.ceil(text.length/12));
     }
 
-    
     async function init() {
       const todayKey = getTodayKey();
       let data = JSON.parse(localStorage.getItem("quoteData")||"null");
 
-      if (!data || data.date !== todayKey) {
+      const now = new Date();
+      const resetTime = getResetTime();
+      const isPastReset = now >= resetTime;
+
+      
+      if (!data || data.date !== todayKey || isPastReset) {
         const newQuote = await fetchQuote();
         data = { date: todayKey, text: newQuote, destroyed: false };
         localStorage.setItem("quoteData", JSON.stringify(data));
@@ -230,8 +231,14 @@
         startCountdown(data);
       }
 
-      const delay = getNextReset() - new Date();
-      setTimeout(() => { localStorage.removeItem("quoteData"); location.reload(); }, delay);
+      // Schedule the next reset
+      let nextReset = getResetTime();
+      if (now >= nextReset) nextReset.setDate(nextReset.getDate()+1);
+      const delay = nextReset - now;
+      setTimeout(() => {
+        localStorage.removeItem("quoteData");
+        location.reload();
+      }, delay);
     }
 
     function startCountdown(data) {
